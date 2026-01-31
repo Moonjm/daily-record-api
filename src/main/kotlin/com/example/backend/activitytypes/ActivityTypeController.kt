@@ -72,7 +72,7 @@ class ActivityTypeController(
     )
     fun create(
         @Valid @RequestBody request: ActivityTypeRequest,
-    ): Long = service.create(request).id
+    ): ResponseEntity<Long> = ResponseEntity.ok(service.create(request).id)
 
     @PutMapping("/{id}")
     @Operation(summary = "운동 타입 수정")
