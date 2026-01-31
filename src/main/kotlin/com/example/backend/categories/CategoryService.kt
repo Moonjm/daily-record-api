@@ -1,4 +1,4 @@
-package com.example.backend.activitytypes
+package com.example.backend.categories
 
 import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ActivityTypeService(
-    private val repository: ActivityTypeRepository,
+class CategoryService(
+    private val repository: CategoryRepository,
 ) {
     @Transactional(readOnly = true)
-    fun list(active: Boolean?): List<ActivityTypeResponse> {
+    fun list(active: Boolean?): List<CategoryResponse> {
         val entities =
             if (active == null) {
                 repository.findAllByOrderBySortOrderAscIdAsc()
@@ -22,12 +22,12 @@ class ActivityTypeService(
     }
 
     @Transactional(readOnly = true)
-    fun get(id: Long): ActivityTypeResponse =
+    fun get(id: Long): CategoryResponse =
         repository.findByIdOrNull(id)?.toResponse()
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
 
     @Transactional
-    fun create(request: ActivityTypeRequest): ActivityTypeResponse {
+    fun create(request: CategoryRequest): CategoryResponse {
         val emoji = request.emoji.trim()
         val name = request.name.trim()
         validateRequired(emoji, name)
@@ -38,7 +38,7 @@ class ActivityTypeService(
 
         val nextSortOrder = (repository.findTopByOrderBySortOrderDescIdDesc()?.sortOrder ?: 0) + 1
         val entity =
-            ActivityType(
+            Category(
                 emoji = emoji,
                 name = name,
                 isActive = request.isActive,
@@ -50,8 +50,8 @@ class ActivityTypeService(
     @Transactional
     fun update(
         id: Long,
-        request: ActivityTypeRequest,
-    ): ActivityTypeResponse {
+        request: CategoryRequest,
+    ): CategoryResponse {
         val entity =
             repository.findByIdOrNull(id)
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
@@ -80,7 +80,7 @@ class ActivityTypeService(
     }
 
     @Transactional
-    fun move(request: ActivityTypeMoveRequest) {
+    fun move(request: CategoryMoveRequest) {
         val beforeId = request.beforeId
         if (beforeId == request.targetId) {
             throw CustomException(ErrorCode.INVALID_REQUEST, "targetId")

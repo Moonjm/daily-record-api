@@ -1,10 +1,10 @@
-package com.example.backend.activitytypes
+package com.example.backend.categories
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 
-@Schema(description = "운동 타입 응답")
-data class ActivityTypeResponse(
+@Schema(description = "카테고리 응답")
+data class CategoryResponse(
     @field:Schema(description = "ID", example = "1")
     val id: Long,
     @field:Schema(description = "이모지", example = "🏋️")
@@ -17,8 +17,8 @@ data class ActivityTypeResponse(
     val sortOrder: Int,
 )
 
-fun ActivityType.toResponse(): ActivityTypeResponse =
-    ActivityTypeResponse(
+fun Category.toResponse(): CategoryResponse =
+    CategoryResponse(
         id = id ?: 0L,
         emoji = emoji,
         name = name,
@@ -26,8 +26,8 @@ fun ActivityType.toResponse(): ActivityTypeResponse =
         sortOrder = sortOrder,
     )
 
-@Schema(description = "운동 타입 요청")
-data class ActivityTypeRequest(
+@Schema(description = "카테고리 요청")
+data class CategoryRequest(
     @field:Schema(description = "이모지", example = "🏊")
     @field:NotBlank
     val emoji: String,
@@ -38,10 +38,10 @@ data class ActivityTypeRequest(
     val isActive: Boolean,
 )
 
-@Schema(description = "운동 타입 순서 변경 요청")
-data class ActivityTypeMoveRequest(
-    @field:Schema(description = "이동할 운동 타입 ID", example = "3")
+@Schema(description = "카테고리 순서 변경 요청")
+data class CategoryMoveRequest(
+    @field:Schema(description = "이동할 카테고리 ID", example = "3")
     val targetId: Long,
-    @field:Schema(description = "앞에 둘 운동 타입 ID", example = "8")
+    @field:Schema(description = "앞에 둘 카테고리 ID", example = "8")
     val beforeId: Long? = null,
 )

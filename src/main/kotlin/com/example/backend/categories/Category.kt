@@ -1,4 +1,4 @@
-package com.example.backend.activitytypes
+package com.example.backend.categories
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -11,8 +11,8 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "activity_types")
-class ActivityType(
+@Table(name = "categories")
+class Category(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,

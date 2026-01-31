@@ -1,4 +1,4 @@
-package com.example.backend.activitytypes
+package com.example.backend.categories
 
 import com.example.backend.common.annotation.ResponseCreated
 import com.example.backend.common.response.DataResponseBody
@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "운동 타입", description = "운동 타입 API")
+@Tag(name = "카테고리", description = "카테고리 API")
 @RestController
-@RequestMapping("/activity-types")
-class ActivityTypeController(
-    private val service: ActivityTypeService,
+@RequestMapping("/categories")
+class CategoryController(
+    private val service: CategoryService,
 ) {
     @GetMapping
-    @Operation(summary = "운동 타입 목록 조회")
+    @Operation(summary = "카테고리 목록 조회")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "성공"),
@@ -38,10 +38,10 @@ class ActivityTypeController(
     fun list(
         @Parameter(description = "활성 여부 필터", example = "true")
         @RequestParam(required = false) active: Boolean?,
-    ): ResponseEntity<DataResponseBody<List<ActivityTypeResponse>>> = ResponseEntity.ok(DataResponseBody(service.list(active)))
+    ): ResponseEntity<DataResponseBody<List<CategoryResponse>>> = ResponseEntity.ok(DataResponseBody(service.list(active)))
 
     @GetMapping("/{id}")
-    @Operation(summary = "운동 타입 단건 조회")
+    @Operation(summary = "카테고리 단건 조회")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "성공"),
@@ -53,13 +53,13 @@ class ActivityTypeController(
         ],
     )
     fun get(
-        @Parameter(description = "운동 타입 ID", example = "1")
+        @Parameter(description = "카테고리 ID", example = "1")
         @PathVariable id: Long,
-    ): ResponseEntity<DataResponseBody<ActivityTypeResponse>> = ResponseEntity.ok(DataResponseBody(service.get(id)))
+    ): ResponseEntity<DataResponseBody<CategoryResponse>> = ResponseEntity.ok(DataResponseBody(service.get(id)))
 
     @PostMapping
-    @ResponseCreated("/activity-types/{id}")
-    @Operation(summary = "운동 타입 생성")
+    @ResponseCreated("/categories/{id}")
+    @Operation(summary = "카테고리 생성")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "201", description = "생성됨"),
@@ -71,11 +71,11 @@ class ActivityTypeController(
         ],
     )
     fun create(
-        @Valid @RequestBody request: ActivityTypeRequest,
+        @Valid @RequestBody request: CategoryRequest,
     ): ResponseEntity<Long> = ResponseEntity.ok(service.create(request).id)
 
     @PutMapping("/{id}")
-    @Operation(summary = "운동 타입 수정")
+    @Operation(summary = "카테고리 수정")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "수정됨"),
@@ -93,14 +93,14 @@ class ActivityTypeController(
     )
     fun update(
         @PathVariable id: Long,
-        @Valid @RequestBody request: ActivityTypeRequest,
+        @Valid @RequestBody request: CategoryRequest,
     ): ResponseEntity<Void> {
         service.update(id, request)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "운동 타입 삭제")
+    @Operation(summary = "카테고리 삭제")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "삭제됨"),
@@ -112,7 +112,7 @@ class ActivityTypeController(
         ],
     )
     fun delete(
-        @Parameter(description = "운동 타입 ID", example = "1")
+        @Parameter(description = "카테고리 ID", example = "1")
         @PathVariable id: Long,
     ): ResponseEntity<Void> {
         service.delete(id)
@@ -120,7 +120,7 @@ class ActivityTypeController(
     }
 
     @PutMapping("/order")
-    @Operation(summary = "운동 타입 순서 변경")
+    @Operation(summary = "카테고리 순서 변경")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "수정됨"),
@@ -137,7 +137,7 @@ class ActivityTypeController(
         ],
     )
     fun reorder(
-        @Valid @RequestBody request: ActivityTypeMoveRequest,
+        @Valid @RequestBody request: CategoryMoveRequest,
     ): ResponseEntity<Void> {
         service.move(request)
         return ResponseEntity.noContent().build()
