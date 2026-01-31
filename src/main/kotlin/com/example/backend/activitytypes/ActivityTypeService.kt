@@ -36,12 +36,13 @@ class ActivityTypeService(
             throw CustomException(ErrorCode.DUPLICATE_RESOURCE, emoji)
         }
 
+        val nextSortOrder = (repository.findTopByOrderBySortOrderDescIdDesc()?.sortOrder ?: 0) + 1
         val entity =
             ActivityType(
                 emoji = emoji,
                 name = name,
                 isActive = request.isActive,
-                sortOrder = request.sortOrder,
+                sortOrder = nextSortOrder,
             )
         return repository.save(entity).toResponse()
     }
@@ -66,7 +67,6 @@ class ActivityTypeService(
         entity.emoji = emoji
         entity.name = name
         entity.isActive = request.isActive
-        entity.sortOrder = request.sortOrder
 
         return repository.save(entity).toResponse()
     }

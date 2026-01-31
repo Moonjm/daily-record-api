@@ -8,4 +8,6 @@ interface ActivityTypeRepository : JpaRepository<ActivityType, Long> {
     fun findAllByIsActiveOrderBySortOrderAscIdAsc(isActive: Boolean): List<ActivityType>
 
     fun findAllByOrderBySortOrderAscIdAsc(): List<ActivityType>
+
+    fun findTopByOrderBySortOrderDescIdDesc(): ActivityType?
 }

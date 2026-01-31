@@ -36,8 +36,6 @@ data class ActivityTypeRequest(
     val name: String,
     @field:Schema(description = "활성 여부", example = "true")
     val isActive: Boolean,
-    @field:Schema(description = "정렬 순서", example = "2")
-    val sortOrder: Int,
 )
 
 @Schema(description = "운동 타입 순서 변경 요청")
