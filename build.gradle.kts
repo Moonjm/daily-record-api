@@ -29,10 +29,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.oshai:kotlin-logging:7.0.12")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.2.9.Final:${if (System.getProperty("os.arch") == "aarch64") "osx-aarch_64" else "osx-x86_64"}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -49,4 +53,3 @@ spotless {
         endWithNewline()
     }
 }
-

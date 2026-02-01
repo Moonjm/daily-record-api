@@ -12,5 +12,6 @@ class CorsConfig : WebMvcConfigurer {
             .allowedOriginPatterns("http://localhost:*", "http://192.168.0.*:*")
             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             .allowedHeaders("*")
+            .allowCredentials(true)
     }
 }

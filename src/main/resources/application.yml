@@ -16,3 +16,8 @@ spring:
         jdbc:
           batch_size: 100
 
+security:
+  jwt:
+    secret: ${JWT_SECRET:vj9g4oRmXLDYW9fuGHZdkpSgHALhTCi6LZoiSaVyCF4=}
+    access-token-expire-minutes: ${JWT_EXPIRE_MINUTES:120}
+    refresh-token-expire-days: ${JWT_REFRESH_DAYS:30}
