@@ -1,4 +1,4 @@
-package com.example.backend.auth
+package com.example.backend.common.utils
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

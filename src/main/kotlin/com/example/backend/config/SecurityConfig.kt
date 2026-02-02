@@ -1,5 +1,6 @@
-package com.example.backend.auth
+package com.example.backend.config
 
+import com.example.backend.auth.security.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -26,6 +27,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/admin/register").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .anyRequest().authenticated()
             }

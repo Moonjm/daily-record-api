@@ -1,10 +1,12 @@
-package com.example.backend.auth
+package com.example.backend.auth.security
 
+import com.example.backend.user.UserRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
@@ -20,15 +22,10 @@ class JwtAuthFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val headerToken = request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }
-            ?.removePrefix("Bearer ")
-            ?.trim()
 
-        val cookieToken = request.cookies
+        val token = request.cookies
             ?.firstOrNull { it.name == "access_token" }
             ?.value
-
-        val token = headerToken ?: cookieToken
 
         if (token.isNullOrBlank()) {
             filterChain.doFilter(request, response)
@@ -41,7 +38,7 @@ class JwtAuthFilter(
             if (SecurityContextHolder.getContext().authentication == null) {
                 val user = userRepository.findByUsername(username) ?: return@runCatching
                 val principal: UserDetails =
-                    org.springframework.security.core.userdetails.User
+                    User
                         .withUsername(user.username)
                         .password(user.passwordHash)
                         .authorities(user.authority)

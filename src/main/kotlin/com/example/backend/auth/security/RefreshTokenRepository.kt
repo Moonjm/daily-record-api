@@ -1,4 +1,4 @@
-package com.example.backend.auth
+package com.example.backend.auth.security
 
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime

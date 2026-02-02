@@ -1,5 +1,6 @@
-package com.example.backend.auth
+package com.example.backend.auth.security
 
+import com.example.backend.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType

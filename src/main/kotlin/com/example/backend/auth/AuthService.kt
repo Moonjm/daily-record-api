@@ -1,7 +1,14 @@
 package com.example.backend.auth
 
+import com.example.backend.auth.security.JwtProperties
+import com.example.backend.auth.security.JwtService
+import com.example.backend.auth.security.RefreshToken
+import com.example.backend.auth.security.RefreshTokenRepository
 import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
+import com.example.backend.common.utils.TokenHasher
+import com.example.backend.user.User
+import com.example.backend.user.UserRepository
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -110,4 +117,9 @@ class AuthService(
         )
         return TokenPair(accessToken = accessToken, refreshToken = refreshToken)
     }
+
+    private data class TokenPair(
+        val accessToken: String,
+        val refreshToken: String,
+    )
 }

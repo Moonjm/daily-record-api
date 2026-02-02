@@ -1,4 +1,4 @@
-package com.example.backend.auth
+package com.example.backend.auth.security
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 
