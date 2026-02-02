@@ -27,8 +27,8 @@ class CategoryService(
 
     @Transactional
     fun create(request: CategoryRequest): CategoryResponse {
-        val emoji = request.emoji.trim()
-        val name = request.name.trim()
+        val emoji = request.emoji
+        val name = request.name
         validateRequired(emoji, name)
 
         if (repository.existsByEmoji(emoji)) {
@@ -50,13 +50,13 @@ class CategoryService(
     fun update(
         id: Long,
         request: CategoryRequest,
-    ): CategoryResponse {
+    ) {
         val entity =
             repository.findByIdOrNull(id)
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
 
-        val emoji = request.emoji.trim()
-        val name = request.name.trim()
+        val emoji = request.emoji
+        val name = request.name
         validateRequired(emoji, name)
 
         if (emoji != entity.emoji && repository.existsByEmoji(emoji)) {
@@ -64,8 +64,6 @@ class CategoryService(
         }
 
         entity.updateDetails(emoji = emoji, name = name, isActive = request.isActive)
-
-        return repository.save(entity).toResponse()
     }
 
     @Transactional

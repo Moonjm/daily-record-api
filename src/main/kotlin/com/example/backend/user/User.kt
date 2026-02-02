@@ -12,6 +12,8 @@ import jakarta.persistence.Table
 class User(
     @Column(nullable = false, length = 50, unique = true)
     var username: String,
+    @Column(nullable = true, length = 50)
+    var name: String? = null,
     @Column(nullable = false, length = 100)
     var passwordHash: String,
     @Enumerated(EnumType.STRING)
@@ -24,5 +26,13 @@ class User(
     ) {
         this.passwordHash = passwordHash
         this.authority = authority
+    }
+
+    fun updateProfile(name: String?) {
+        this.name = name
+    }
+
+    fun updatePassword(passwordHash: String) {
+        this.passwordHash = passwordHash
     }
 }

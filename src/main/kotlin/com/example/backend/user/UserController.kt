@@ -8,9 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -39,4 +42,34 @@ class UserController(
     )
     fun me(authentication: Authentication): ResponseEntity<DataResponseBody<UserResponse>> =
         ResponseEntity.ok(DataResponseBody(service.me(authentication.name)))
+
+    @PatchMapping("/me")
+    @Operation(summary = "내 정보 수정")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "성공"),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증 필요",
+                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
+            ),
+        ],
+    )
+    fun updateMe(
+        @Valid @RequestBody request: UserUpdateRequest,
+        authentication: Authentication,
+    ): ResponseEntity<Void> {
+        service.updateMe(authentication.name, request)
+        return ResponseEntity.noContent().build()
+    }
 }

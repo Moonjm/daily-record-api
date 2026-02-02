@@ -98,6 +98,6 @@ class DailyRecordService(
     }
 
     private fun findUser(username: String): User =
-        userRepository.findByUsername(username.trim())
+        userRepository.findByUsername(username)
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, username)
 }
