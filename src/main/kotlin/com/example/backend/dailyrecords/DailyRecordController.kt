@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -50,24 +51,9 @@ class DailyRecordController(
         @RequestParam(required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         to: LocalDate?,
-    ): ResponseEntity<DataResponseBody<List<DailyRecordResponse>>> = ResponseEntity.ok(DataResponseBody(service.list(date, from, to)))
-
-    @GetMapping("/{id}")
-    @Operation(summary = "일상기록 단건 조회")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "성공"),
-            ApiResponse(
-                responseCode = "404",
-                description = "찾을 수 없음",
-                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
-            ),
-        ],
-    )
-    fun get(
-        @Parameter(description = "일상기록 ID", example = "1")
-        @PathVariable id: Long,
-    ): ResponseEntity<DataResponseBody<DailyRecordResponse>> = ResponseEntity.ok(DataResponseBody(service.get(id)))
+        authentication: Authentication,
+    ): ResponseEntity<DataResponseBody<List<DailyRecordResponse>>> =
+        ResponseEntity.ok(DataResponseBody(service.list(authentication.name, date, from, to)))
 
     @PostMapping
     @ResponseCreated("/daily-records/{id}")
@@ -84,7 +70,8 @@ class DailyRecordController(
     )
     fun create(
         @Valid @RequestBody request: DailyRecordRequest,
-    ): ResponseEntity<Long> = ResponseEntity.ok(service.create(request).id)
+        authentication: Authentication,
+    ): ResponseEntity<Long> = ResponseEntity.ok(service.create(authentication.name, request))
 
     @PutMapping("/{id}")
     @Operation(summary = "일상기록 수정")
@@ -106,8 +93,9 @@ class DailyRecordController(
     fun update(
         @PathVariable id: Long,
         @Valid @RequestBody request: DailyRecordRequest,
+        authentication: Authentication,
     ): ResponseEntity<Void> {
-        service.update(id, request)
+        service.update(authentication.name, id, request)
         return ResponseEntity.noContent().build()
     }
 
@@ -126,8 +114,9 @@ class DailyRecordController(
     fun delete(
         @Parameter(description = "일상기록 ID", example = "1")
         @PathVariable id: Long,
+        authentication: Authentication,
     ): ResponseEntity<Void> {
-        service.delete(id)
+        service.delete(authentication.name, id)
         return ResponseEntity.noContent().build()
     }
 }

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -55,7 +56,8 @@ class AdminUserController(
         ],
     )
     @PreAuthorize("hasAuthority('ADMIN')")
-    fun list(): ResponseEntity<DataResponseBody<List<UserResponse>>> = ResponseEntity.ok(DataResponseBody(service.list()))
+    fun list(authentication: Authentication): ResponseEntity<DataResponseBody<List<UserResponse>>> =
+        ResponseEntity.ok(DataResponseBody(service.list(authentication.name)))
 
     @GetMapping("/{id}")
     @Operation(summary = "사용자 단건 조회")

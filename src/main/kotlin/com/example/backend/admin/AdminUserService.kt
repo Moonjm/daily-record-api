@@ -19,11 +19,14 @@ class AdminUserService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    fun list(): List<UserResponse> =
-        userRepository
+    fun list(excludeUsername: String): List<UserResponse> {
+        val excludeUserId = findUserByUsername(excludeUsername).requiredId
+        return userRepository
             .findAll()
+            .filterNot { it.requiredId == excludeUserId }
             .sortedBy { it.requiredId }
             .map { it.toResponse() }
+    }
 
     fun get(id: Long): UserResponse = findUser(id).toResponse()
 
@@ -50,4 +53,8 @@ class AdminUserService(
     private fun findUser(id: Long): User =
         userRepository.findByIdOrNull(id)
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
+
+    private fun findUserByUsername(username: String): User =
+        userRepository.findByUsername(username)
+            ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, username)
 }

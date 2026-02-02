@@ -16,4 +16,18 @@ class Category(
     var isActive: Boolean = true,
     @Column(nullable = false)
     var sortOrder: Int = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    fun updateDetails(
+        emoji: String,
+        name: String,
+        isActive: Boolean,
+    ) {
+        this.emoji = emoji
+        this.name = name
+        this.isActive = isActive
+    }
+
+    fun updateSortOrder(sortOrder: Int) {
+        this.sortOrder = sortOrder
+    }
+}

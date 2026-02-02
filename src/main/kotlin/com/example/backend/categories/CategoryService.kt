@@ -63,9 +63,7 @@ class CategoryService(
             throw CustomException(ErrorCode.DUPLICATE_RESOURCE, emoji)
         }
 
-        entity.emoji = emoji
-        entity.name = name
-        entity.isActive = request.isActive
+        entity.updateDetails(emoji = emoji, name = name, isActive = request.isActive)
 
         return repository.save(entity).toResponse()
     }
@@ -106,7 +104,7 @@ class CategoryService(
         entities.add(insertIndex, target)
 
         entities.forEachIndexed { index, entity ->
-            entity.sortOrder = index + 1
+            entity.updateSortOrder(index + 1)
         }
         repository.saveAll(entities)
     }

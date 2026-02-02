@@ -2,6 +2,7 @@ package com.example.backend.dailyrecords
 
 import com.example.backend.categories.Category
 import com.example.backend.common.entity.BaseEntity
+import com.example.backend.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -17,14 +18,28 @@ import java.time.LocalDate
     indexes = [
         Index(name = "idx_daily_records_date", columnList = "date"),
         Index(name = "idx_daily_records_category", columnList = "category_id"),
+        Index(name = "idx_daily_records_user", columnList = "user_id"),
     ],
 )
 class DailyRecord(
     @Column(nullable = false)
     var date: LocalDate,
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    var user: User,
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     var category: Category,
     @Column(nullable = true, length = 10)
     var memo: String? = null,
-) : BaseEntity()
+) : BaseEntity() {
+    fun updateDetails(
+        date: LocalDate,
+        category: Category,
+        memo: String?,
+    ) {
+        this.date = date
+        this.category = category
+        this.memo = memo
+    }
+}

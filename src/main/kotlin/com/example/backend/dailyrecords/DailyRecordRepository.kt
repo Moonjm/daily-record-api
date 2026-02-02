@@ -1,15 +1,9 @@
 package com.example.backend.dailyrecords
 
+import com.example.backend.user.User
+import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
 import org.springframework.data.jpa.repository.JpaRepository
-import java.time.LocalDate
 
-interface DailyRecordRepository : JpaRepository<DailyRecord, Long> {
-    fun findAllByDateOrderByDateAscIdAsc(date: LocalDate): List<DailyRecord>
-
-    fun findAllByDateBetweenOrderByDateAscIdAsc(
-        from: LocalDate,
-        to: LocalDate,
-    ): List<DailyRecord>
-
-    fun findAllByOrderByDateAscIdAsc(): List<DailyRecord>
+interface DailyRecordRepository : JpaRepository<DailyRecord, Long>, KotlinJdslJpqlExecutor {
+    fun findByIdAndUser(id: Long, user: User): DailyRecord?
 }

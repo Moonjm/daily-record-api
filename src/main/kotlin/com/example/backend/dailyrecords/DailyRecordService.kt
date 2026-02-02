@@ -3,6 +3,11 @@ package com.example.backend.dailyrecords
 import com.example.backend.categories.CategoryRepository
 import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
+import com.example.backend.common.utils.findAllNotNull
+import com.example.backend.user.User
+import com.example.backend.user.UserRepository
+import com.linecorp.kotlinjdsl.querymodel.jpql.path.Paths.path
+import com.linecorp.kotlinjdsl.querymodel.jpql.predicate.Predicatable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,41 +18,39 @@ import java.time.LocalDate
 class DailyRecordService(
     private val repository: DailyRecordRepository,
     private val categoryRepository: CategoryRepository,
+    private val userRepository: UserRepository,
 ) {
     fun list(
+        username: String,
         date: LocalDate?,
         from: LocalDate?,
         to: LocalDate?,
     ): List<DailyRecordResponse> {
+        val user = findUser(username)
         val entries =
-            when {
-                date != null -> {
-                    repository.findAllByDateOrderByDateAscIdAsc(date)
-                }
-
-                from != null || to != null -> {
-                    if (from == null || to == null) {
-                        throw CustomException(ErrorCode.INVALID_REQUEST, "dateRange")
-                    }
-                    if (from.isAfter(to)) {
-                        throw CustomException(ErrorCode.INVALID_REQUEST, "dateRange")
-                    }
-                    repository.findAllByDateBetweenOrderByDateAscIdAsc(from, to)
-                }
-
-                else -> {
-                    repository.findAllByOrderByDateAscIdAsc()
-                }
+            repository.findAllNotNull {
+                val record = entity(DailyRecord::class)
+                val predicates = mutableListOf<Predicatable>()
+                predicates += path(record, DailyRecord::user).eq(user)
+                date?.let { predicates += path(record, DailyRecord::date).eq(it) }
+                from?.let { predicates += path(record, DailyRecord::date).ge(it) }
+                to?.let { predicates += path(record, DailyRecord::date).le(it) }
+                select(record)
+                    .from(record)
+                    .whereAnd(*predicates.toTypedArray())
+                    .orderBy(
+                        path(record, DailyRecord::date).asc(),
+                        path(record, DailyRecord::id).asc(),
+                    )
             }
         return entries.map { it.toResponse() }
     }
 
-    fun get(id: Long): DailyRecordResponse =
-        repository.findByIdOrNull(id)?.toResponse()
-            ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
-
     @Transactional
-    fun create(request: DailyRecordRequest): DailyRecordResponse {
+    fun create(
+        username: String,
+        request: DailyRecordRequest,
+    ): Long {
         val category =
             categoryRepository.findByIdOrNull(request.categoryId)
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, request.categoryId)
@@ -55,37 +58,46 @@ class DailyRecordService(
         val entity =
             DailyRecord(
                 date = request.date,
+                user = findUser(username),
                 category = category,
                 memo = request.memo,
             )
-        return repository.save(entity).toResponse()
+        return repository.save(entity).requiredId
     }
 
     @Transactional
     fun update(
+        username: String,
         id: Long,
         request: DailyRecordRequest,
-    ): DailyRecordResponse {
+    ) {
         val entity =
-            repository.findByIdOrNull(id)
+            repository.findByIdAndUser(id, findUser(username))
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
 
         val category =
             categoryRepository.findByIdOrNull(request.categoryId)
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, request.categoryId)
 
-        entity.date = request.date
-        entity.category = category
-        entity.memo = request.memo
-
-        return repository.save(entity).toResponse()
+        entity.updateDetails(
+            date = request.date,
+            category = category,
+            memo = request.memo,
+        )
     }
 
     @Transactional
-    fun delete(id: Long) {
+    fun delete(
+        username: String,
+        id: Long,
+    ) {
         val entity =
-            repository.findByIdOrNull(id)
+            repository.findByIdAndUser(id, findUser(username))
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
         repository.delete(entity)
     }
+
+    private fun findUser(username: String): User =
+        userRepository.findByUsername(username.trim())
+            ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, username)
 }
