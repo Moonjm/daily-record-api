@@ -19,7 +19,7 @@ data class CategoryResponse(
 
 fun Category.toResponse(): CategoryResponse =
     CategoryResponse(
-        id = id ?: 0L,
+        id = requiredId,
         emoji = emoji,
         name = name,
         isActive = isActive,

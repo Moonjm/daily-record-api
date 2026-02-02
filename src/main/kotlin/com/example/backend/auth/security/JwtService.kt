@@ -4,10 +4,12 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.nio.charset.StandardCharsets
 import java.util.Date
 
 @Service
+@Transactional(readOnly = true)
 class JwtService(
     private val jwtProperties: JwtProperties,
 ) {

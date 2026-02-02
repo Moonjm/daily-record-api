@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.LocalDate
 
 @Service
+@Transactional(readOnly = true)
 class HolidaysService(
     private val webClient: WebClient,
 ) {

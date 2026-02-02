@@ -41,7 +41,7 @@ class JwtAuthFilter(
                     User
                         .withUsername(user.username)
                         .password(user.passwordHash)
-                        .authorities(user.authority)
+                        .authorities(user.authority.name)
                         .build()
                 val auth =
                     UsernamePasswordAuthenticationToken(principal, null, principal.authorities).apply {

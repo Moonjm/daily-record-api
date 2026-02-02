@@ -8,13 +8,13 @@ data class UserResponse(
     val id: Long,
     @field:Schema(description = "아이디", example = "admin")
     val username: String,
-    @field:Schema(description = "권한", example = "USER")
-    val authority: String,
+    @field:Schema(description = "권한", example = "USER", allowableValues = ["USER", "ADMIN"])
+    val authority: Authority,
 )
 
 fun User.toResponse(): UserResponse =
     UserResponse(
-        id = id ?: 0,
+        id = requiredId,
         username = username,
         authority = authority,
     )

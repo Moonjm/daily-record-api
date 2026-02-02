@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class CategoryService(
     private val repository: CategoryRepository,
 ) {
-    @Transactional(readOnly = true)
     fun list(active: Boolean?): List<CategoryResponse> {
         val entities =
             if (active == null) {
@@ -21,7 +21,6 @@ class CategoryService(
         return entities.map { it.toResponse() }
     }
 
-    @Transactional(readOnly = true)
     fun get(id: Long): CategoryResponse =
         repository.findByIdOrNull(id)?.toResponse()
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)

@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class UserService(
     private val userRepository: UserRepository,
 ) {
-    @Transactional(readOnly = true)
     fun me(username: String): UserResponse =
-        userRepository.findByUsername(username)?.toResponse()
+        userRepository.findByUsername(username.trim())?.toResponse()
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, username)
 }

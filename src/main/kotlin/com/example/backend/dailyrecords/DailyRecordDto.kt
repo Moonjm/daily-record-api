@@ -20,7 +20,7 @@ data class DailyRecordResponse(
 
 fun DailyRecord.toResponse(): DailyRecordResponse =
     DailyRecordResponse(
-        id = id ?: 0L,
+        id = requiredId,
         date = date,
         memo = memo,
         category = category.toResponse(),

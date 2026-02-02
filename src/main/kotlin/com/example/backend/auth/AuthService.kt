@@ -41,7 +41,7 @@ class AuthService(
                 username = username,
                 passwordHash = encoded,
             )
-        return userRepository.save(user).id!!
+        return userRepository.save(user).requiredId
     }
 
     @Transactional
@@ -101,13 +101,13 @@ class AuthService(
                     hashed,
                     LocalDateTime.now(),
                 )
-            token?.user?.id?.let { refreshTokenRepository.deleteAllByUserId(it) }
+            token?.user?.requiredId?.let { refreshTokenRepository.deleteAllByUserId(it) }
         }
         cookieService.clearAuthCookies(response)
     }
 
     private fun issueTokens(user: User): TokenPair {
-        val userId = user.id ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, "user")
+        val userId = user.requiredId
         refreshTokenRepository.deleteAllByUserId(userId)
         val accessToken = jwtService.createAccessToken(user.username)
         val refreshToken = UUID.randomUUID().toString().replace("-", "")

@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
+@Transactional(readOnly = true)
 class DailyRecordService(
     private val repository: DailyRecordRepository,
     private val categoryRepository: CategoryRepository,
 ) {
-    @Transactional(readOnly = true)
     fun list(
         date: LocalDate?,
         from: LocalDate?,
@@ -42,7 +42,6 @@ class DailyRecordService(
         return entries.map { it.toResponse() }
     }
 
-    @Transactional(readOnly = true)
     fun get(id: Long): DailyRecordResponse =
         repository.findByIdOrNull(id)?.toResponse()
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, id)
