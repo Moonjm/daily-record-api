@@ -33,7 +33,7 @@ class AdminUserController(
     private val authService: AuthService,
 ) {
     @PostMapping
-    @Operation(summary = "관리자 등록")
+    @Operation(summary = "사용자 등록")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "201", description = "생성됨"),
