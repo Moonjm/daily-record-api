@@ -50,8 +50,7 @@ class DailyRecordController(
         @RequestParam(required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         to: LocalDate?,
-    ): ResponseEntity<DataResponseBody<List<DailyRecordResponse>>> =
-        ResponseEntity.ok(DataResponseBody(service.list(date, from, to)))
+    ): ResponseEntity<DataResponseBody<List<DailyRecordResponse>>> = ResponseEntity.ok(DataResponseBody(service.list(date, from, to)))
 
     @GetMapping("/{id}")
     @Operation(summary = "일상기록 단건 조회")
@@ -68,8 +67,7 @@ class DailyRecordController(
     fun get(
         @Parameter(description = "일상기록 ID", example = "1")
         @PathVariable id: Long,
-    ): ResponseEntity<DataResponseBody<DailyRecordResponse>> =
-        ResponseEntity.ok(DataResponseBody(service.get(id)))
+    ): ResponseEntity<DataResponseBody<DailyRecordResponse>> = ResponseEntity.ok(DataResponseBody(service.get(id)))
 
     @PostMapping
     @ResponseCreated("/daily-records/{id}")

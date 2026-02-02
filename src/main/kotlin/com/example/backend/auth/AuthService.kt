@@ -33,8 +33,9 @@ class AuthService(
         if (userRepository.existsByUsername(username)) {
             throw CustomException(ErrorCode.DUPLICATE_RESOURCE, username)
         }
-        val encoded = passwordEncoder.encode(password)
-            ?: throw CustomException(ErrorCode.INVALID_REQUEST, "password")
+        val encoded =
+            passwordEncoder.encode(password)
+                ?: throw CustomException(ErrorCode.INVALID_REQUEST, "password")
         val user =
             User(
                 username = username,
@@ -44,7 +45,10 @@ class AuthService(
     }
 
     @Transactional
-    fun login(request: LoginRequest, response: HttpServletResponse) {
+    fun login(
+        request: LoginRequest,
+        response: HttpServletResponse,
+    ) {
         val username = request.username
         val password = request.password
         val user =

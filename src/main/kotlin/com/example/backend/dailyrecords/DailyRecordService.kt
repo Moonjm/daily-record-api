@@ -21,7 +21,10 @@ class DailyRecordService(
     ): List<DailyRecordResponse> {
         val entries =
             when {
-                date != null -> repository.findAllByDateOrderByDateAscIdAsc(date)
+                date != null -> {
+                    repository.findAllByDateOrderByDateAscIdAsc(date)
+                }
+
                 from != null || to != null -> {
                     if (from == null || to == null) {
                         throw CustomException(ErrorCode.INVALID_REQUEST, "dateRange")
@@ -31,7 +34,10 @@ class DailyRecordService(
                     }
                     repository.findAllByDateBetweenOrderByDateAscIdAsc(from, to)
                 }
-                else -> repository.findAllByOrderByDateAscIdAsc()
+
+                else -> {
+                    repository.findAllByOrderByDateAscIdAsc()
+                }
             }
         return entries.map { it.toResponse() }
     }

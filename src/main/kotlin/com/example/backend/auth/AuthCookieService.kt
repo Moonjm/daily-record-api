@@ -1,17 +1,21 @@
 package com.example.backend.auth
 
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.stereotype.Service
-import jakarta.servlet.http.HttpServletResponse
 
 @Service
 class AuthCookieService {
-    fun accessTokenCookie(token: String, maxAgeSeconds: Long): ResponseCookie =
-        baseCookie("access_token", token, maxAgeSeconds)
+    fun accessTokenCookie(
+        token: String,
+        maxAgeSeconds: Long,
+    ): ResponseCookie = baseCookie("access_token", token, maxAgeSeconds)
 
-    fun refreshTokenCookie(token: String, maxAgeSeconds: Long): ResponseCookie =
-        baseCookie("refresh_token", token, maxAgeSeconds)
+    fun refreshTokenCookie(
+        token: String,
+        maxAgeSeconds: Long,
+    ): ResponseCookie = baseCookie("refresh_token", token, maxAgeSeconds)
 
     fun clearAccessTokenCookie(): ResponseCookie = baseCookie("access_token", "", 0)
 
@@ -39,8 +43,13 @@ class AuthCookieService {
         response.addHeader(HttpHeaders.SET_COOKIE, clearRefreshTokenCookie().toString())
     }
 
-    private fun baseCookie(name: String, value: String, maxAgeSeconds: Long): ResponseCookie =
-        ResponseCookie.from(name, value)
+    private fun baseCookie(
+        name: String,
+        value: String,
+        maxAgeSeconds: Long,
+    ): ResponseCookie =
+        ResponseCookie
+            .from(name, value)
             .secure(false)
             .httpOnly(true)
             .sameSite("Lax")

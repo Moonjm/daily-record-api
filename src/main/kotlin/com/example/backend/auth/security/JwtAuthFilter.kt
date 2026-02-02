@@ -22,10 +22,10 @@ class JwtAuthFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-
-        val token = request.cookies
-            ?.firstOrNull { it.name == "access_token" }
-            ?.value
+        val token =
+            request.cookies
+                ?.firstOrNull { it.name == "access_token" }
+                ?.value
 
         if (token.isNullOrBlank()) {
             filterChain.doFilter(request, response)

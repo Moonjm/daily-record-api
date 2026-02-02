@@ -11,13 +11,13 @@ import java.util.Date
 class JwtService(
     private val jwtProperties: JwtProperties,
 ) {
-    private fun signingKey() =
-        Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray(StandardCharsets.UTF_8))
+    private fun signingKey() = Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray(StandardCharsets.UTF_8))
 
     fun createAccessToken(username: String): String {
         val now = Date()
         val expiry = Date(now.time + jwtProperties.accessTokenExpireMinutes * 60_000)
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .subject(username)
             .issuedAt(now)
             .expiration(expiry)
@@ -26,7 +26,8 @@ class JwtService(
     }
 
     fun parseClaims(token: String): Claims =
-        Jwts.parser()
+        Jwts
+            .parser()
             .verifyWith(signingKey())
             .build()
             .parseSignedClaims(token)
@@ -34,6 +35,5 @@ class JwtService(
 
     fun accessTokenMaxAgeSeconds(): Long = jwtProperties.accessTokenExpireMinutes * 60
 
-    fun refreshTokenMaxAgeSeconds(): Long =
-        jwtProperties.refreshTokenExpireDays * 24 * 60 * 60
+    fun refreshTokenMaxAgeSeconds(): Long = jwtProperties.refreshTokenExpireDays * 24 * 60 * 60
 }
