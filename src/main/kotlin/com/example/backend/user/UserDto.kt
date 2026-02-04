@@ -9,7 +9,7 @@ data class UserResponse(
     @field:Schema(description = "아이디", example = "admin")
     val username: String,
     @field:Schema(description = "이름", example = "홍길동")
-    val name: String?,
+    val name: String,
     @field:Schema(description = "권한", example = "USER", allowableValues = ["USER", "ADMIN"])
     val authority: Authority,
 )

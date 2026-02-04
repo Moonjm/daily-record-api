@@ -39,6 +39,7 @@ class AuthService(
         val user =
             User(
                 username = username,
+                name = request.name,
                 passwordHash = encoded,
             )
         return userRepository.save(user).requiredId

@@ -8,6 +8,9 @@ data class RegisterRequest(
     @field:Schema(description = "아이디", example = "user1")
     @field:NotBlank
     val username: String,
+    @field:Schema(description = "이름", example = "홍길동")
+    @field:NotBlank
+    val name: String,
     @field:Schema(description = "비밀번호", example = "password123")
     @field:NotBlank
     val password: String,

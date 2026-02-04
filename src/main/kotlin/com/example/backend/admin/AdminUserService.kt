@@ -41,6 +41,7 @@ class AdminUserService(
             passwordEncoder.encode(request.password)
                 ?: throw CustomException(ErrorCode.INVALID_REQUEST, "password")
         user.updateCredentials(encoded, request.authority)
+        user.updateProfile(request.name)
     }
 
     @Transactional
