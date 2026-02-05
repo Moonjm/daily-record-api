@@ -13,8 +13,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        jdbc:
-          batch_size: 100
+        default_batch_fetch_size: 100
 
 security:
   jwt:

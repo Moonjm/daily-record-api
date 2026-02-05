@@ -110,7 +110,7 @@ class AuthService(
     private fun issueTokens(user: User): TokenPair {
         val userId = user.requiredId
         refreshTokenRepository.deleteAllByUserId(userId)
-        val accessToken = jwtService.createAccessToken(user.username)
+        val accessToken = jwtService.createAccessToken(user.username, user.authority.name)
         val refreshToken = UUID.randomUUID().toString().replace("-", "")
         val expiresAt = LocalDateTime.now().plusDays(jwtProperties.refreshTokenExpireDays)
         refreshTokenRepository.save(

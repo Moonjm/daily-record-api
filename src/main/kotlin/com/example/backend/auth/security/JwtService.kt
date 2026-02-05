@@ -15,12 +15,16 @@ class JwtService(
 ) {
     private fun signingKey() = Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray(StandardCharsets.UTF_8))
 
-    fun createAccessToken(username: String): String {
+    fun createAccessToken(
+        username: String,
+        authority: String,
+    ): String {
         val now = Date()
         val expiry = Date(now.time + jwtProperties.accessTokenExpireMinutes * 60_000)
         return Jwts
             .builder()
             .subject(username)
+            .claim("authority", authority)
             .issuedAt(now)
             .expiration(expiry)
             .signWith(signingKey(), Jwts.SIG.HS256)
