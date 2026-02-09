@@ -1,9 +1,14 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+  forward-headers-strategy: framework
 
 spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   datasource:
-    url: jdbc:postgresql://localhost:5432/toy
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/daily-record
     username: ${DB_USERNAME:toy}
     password: ${DB_PASSWORD:toy00}
     driver-class-name: org.postgresql.Driver
