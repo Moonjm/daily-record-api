@@ -3,6 +3,9 @@ package com.example.backend.pair
 import com.example.backend.common.response.DataResponseBody
 import com.example.backend.common.response.ErrorResponseBody
 import com.example.backend.dailyrecords.DailyRecordResponse
+import com.example.backend.pair.event.PairEventRequest
+import com.example.backend.pair.event.PairEventResponse
+import com.example.backend.pair.event.PairEventService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -28,6 +32,7 @@ import java.time.LocalDate
 @RequestMapping("/pair")
 class PairController(
     private val service: PairService,
+    private val eventService: PairEventService,
 ) {
     @PostMapping("/invite")
     @Operation(summary = "초대 코드 생성")
@@ -124,4 +129,66 @@ class PairController(
         ResponseEntity.ok(
             DataResponseBody(service.getPartnerDailyRecords(authentication.name, date, from, to)),
         )
+
+    @GetMapping("/events")
+    @Operation(summary = "페어 이벤트 목록 조회")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(
+                responseCode = "400",
+                description = "페어가 연결되지 않았습니다",
+                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
+            ),
+        ],
+    )
+    fun listEvents(
+        @Parameter(description = "조회 시작 날짜", example = "2026-02-01")
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        from: LocalDate?,
+        @Parameter(description = "조회 종료 날짜", example = "2026-02-28")
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        to: LocalDate?,
+        authentication: Authentication,
+    ): ResponseEntity<DataResponseBody<List<PairEventResponse>>> =
+        ResponseEntity.ok(DataResponseBody(eventService.list(authentication.name, from, to)))
+
+    @PostMapping("/events")
+    @Operation(summary = "페어 이벤트 등록")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "생성됨"),
+            ApiResponse(
+                responseCode = "400",
+                description = "페어가 연결되지 않았습니다",
+                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
+            ),
+        ],
+    )
+    fun createEvent(
+        @Valid @RequestBody request: PairEventRequest,
+        authentication: Authentication,
+    ): ResponseEntity<DataResponseBody<Long>> = ResponseEntity.ok(DataResponseBody(eventService.create(authentication.name, request)))
+
+    @DeleteMapping("/events/{id}")
+    @Operation(summary = "페어 이벤트 삭제")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "삭제됨"),
+            ApiResponse(
+                responseCode = "404",
+                description = "이벤트를 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponseBody::class))],
+            ),
+        ],
+    )
+    fun deleteEvent(
+        @PathVariable id: Long,
+        authentication: Authentication,
+    ): ResponseEntity<Void> {
+        eventService.delete(authentication.name, id)
+        return ResponseEntity.noContent().build()
+    }
 }

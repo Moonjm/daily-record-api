@@ -103,7 +103,7 @@ class PairService(
         return dailyRecordService.list(partner.username, date, from, to)
     }
 
-    private fun findUser(username: String): User =
+    fun findUser(username: String): User =
         userRepository.findByUsername(username)
             ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, username)
 
@@ -115,7 +115,7 @@ class PairService(
         pairRepository.findByInviterAndStatusIn(user, listOf(PairStatus.PENDING, PairStatus.CONNECTED))
             ?: pairRepository.findByPartnerAndStatus(user, PairStatus.CONNECTED)
 
-    private fun findConnectedPair(user: User): PairConnection? =
+    fun findConnectedPair(user: User): PairConnection? =
         pairRepository.findByInviterAndStatus(user, PairStatus.CONNECTED)
             ?: pairRepository.findByPartnerAndStatus(user, PairStatus.CONNECTED)
 
