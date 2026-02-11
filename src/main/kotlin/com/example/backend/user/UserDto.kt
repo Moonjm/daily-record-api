@@ -12,6 +12,10 @@ data class UserResponse(
     val name: String,
     @field:Schema(description = "권한", example = "USER", allowableValues = ["USER", "ADMIN"])
     val authority: Authority,
+    @field:Schema(description = "성별", example = "MALE", allowableValues = ["MALE", "FEMALE"])
+    val gender: String? = null,
+    @field:Schema(description = "생년월일", example = "1990-01-15")
+    val birthDate: String? = null,
 )
 
 fun User.toResponse(): UserResponse =
@@ -20,4 +24,6 @@ fun User.toResponse(): UserResponse =
         username = username,
         name = name,
         authority = authority,
+        gender = gender?.name,
+        birthDate = birthDate?.toString(),
     )

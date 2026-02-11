@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
+import java.time.LocalDate
 
 @Entity
 @Table(name = "users")
@@ -19,6 +20,11 @@ class User(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     var authority: Authority = Authority.USER,
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    var gender: Gender? = null,
+    @Column(name = "birth_date")
+    var birthDate: LocalDate? = null,
 ) : BaseEntity() {
     fun updateCredentials(
         passwordHash: String,
@@ -28,8 +34,14 @@ class User(
         this.authority = authority
     }
 
-    fun updateProfile(name: String) {
-        this.name = name
+    fun updateProfile(
+        name: String? = null,
+        gender: Gender? = null,
+        birthDate: LocalDate? = null,
+    ) {
+        name?.let { this.name = it }
+        this.gender = gender
+        this.birthDate = birthDate
     }
 
     fun updatePassword(passwordHash: String) {

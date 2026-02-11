@@ -21,6 +21,10 @@ data class PairResponse(
     val partnerName: String?,
     @field:Schema(description = "연결 일시")
     val connectedAt: String?,
+    @field:Schema(description = "상대방 성별", example = "FEMALE")
+    val partnerGender: String? = null,
+    @field:Schema(description = "상대방 생년월일", example = "1995-03-20")
+    val partnerBirthDate: String? = null,
 )
 
 @Schema(description = "페어 초대 수락 요청")
@@ -38,5 +42,7 @@ fun PairConnection.toResponse(currentUser: User): PairResponse {
         status = status,
         partnerName = other?.name,
         connectedAt = connectedAt?.toString(),
+        partnerGender = other?.gender?.name,
+        partnerBirthDate = other?.birthDate?.toString(),
     )
 }

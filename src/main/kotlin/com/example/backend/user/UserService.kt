@@ -24,7 +24,12 @@ class UserService(
         val user =
             userRepository.findByUsername(username)
                 ?: throw CustomException(ErrorCode.RESOURCE_NOT_FOUND, username)
-        request.name?.let { user.updateProfile(it) }
+        val gender = request.gender?.let { Gender.valueOf(it) }
+        user.updateProfile(
+            name = request.name,
+            gender = gender,
+            birthDate = request.birthDate,
+        )
         request.password?.let { newPassword ->
             val currentPassword =
                 request.currentPassword
