@@ -33,6 +33,6 @@ data class DailyRecordRequest(
     @field:Schema(description = "카테고리 ID", example = "3")
     val categoryId: Long,
     @field:Schema(description = "메모", example = "퇴근후")
-    @field:Size(max = 10)
+    @field:Size(max = 20)
     val memo: String? = null,
 )

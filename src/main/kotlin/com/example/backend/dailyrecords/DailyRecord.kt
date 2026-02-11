@@ -30,7 +30,7 @@ class DailyRecord(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     var category: Category,
-    @Column(nullable = true, length = 10)
+    @Column(nullable = true, length = 20)
     var memo: String? = null,
 ) : BaseEntity() {
     fun updateDetails(
