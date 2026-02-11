@@ -8,7 +8,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "categories")
 class Category(
-    @Column(nullable = false, length = 16, unique = true)
+    @Column(nullable = false, length = 16)
     var emoji: String,
     @Column(nullable = false, length = 50)
     var name: String,

@@ -31,10 +31,6 @@ class CategoryService(
         val name = request.name
         validateRequired(emoji, name)
 
-        if (repository.existsByEmoji(emoji)) {
-            throw CustomException(ErrorCode.DUPLICATE_RESOURCE, emoji)
-        }
-
         val nextSortOrder = (repository.findTopByOrderBySortOrderDescIdDesc()?.sortOrder ?: 0) + 1
         val entity =
             Category(
@@ -58,10 +54,6 @@ class CategoryService(
         val emoji = request.emoji
         val name = request.name
         validateRequired(emoji, name)
-
-        if (emoji != entity.emoji && repository.existsByEmoji(emoji)) {
-            throw CustomException(ErrorCode.DUPLICATE_RESOURCE, emoji)
-        }
 
         entity.updateDetails(emoji = emoji, name = name, isActive = request.isActive)
     }
