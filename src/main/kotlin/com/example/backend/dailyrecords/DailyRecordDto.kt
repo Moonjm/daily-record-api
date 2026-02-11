@@ -16,6 +16,8 @@ data class DailyRecordResponse(
     val memo: String?,
     @field:Schema(description = "카테고리")
     val category: CategoryResponse,
+    @field:Schema(description = "같이 여부", example = "false")
+    val together: Boolean,
 )
 
 fun DailyRecord.toResponse(): DailyRecordResponse =
@@ -24,6 +26,7 @@ fun DailyRecord.toResponse(): DailyRecordResponse =
         date = date,
         memo = memo,
         category = category.toResponse(),
+        together = together,
     )
 
 @Schema(description = "일상기록 요청")
@@ -35,4 +38,6 @@ data class DailyRecordRequest(
     @field:Schema(description = "메모", example = "퇴근후")
     @field:Size(max = 20)
     val memo: String? = null,
+    @field:Schema(description = "같이 여부", example = "false")
+    val together: Boolean = false,
 )

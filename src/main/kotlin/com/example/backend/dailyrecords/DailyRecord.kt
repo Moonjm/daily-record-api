@@ -32,14 +32,18 @@ class DailyRecord(
     var category: Category,
     @Column(nullable = true, length = 20)
     var memo: String? = null,
+    @Column(nullable = false)
+    var together: Boolean = false,
 ) : BaseEntity() {
     fun updateDetails(
         date: LocalDate,
         category: Category,
         memo: String?,
+        together: Boolean,
     ) {
         this.date = date
         this.category = category
         this.memo = memo
+        this.together = together
     }
 }

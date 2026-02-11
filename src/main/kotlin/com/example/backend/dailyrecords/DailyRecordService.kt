@@ -61,6 +61,7 @@ class DailyRecordService(
                 user = findUser(username),
                 category = category,
                 memo = request.memo,
+                together = request.together,
             )
         return repository.save(entity).requiredId
     }
@@ -83,6 +84,7 @@ class DailyRecordService(
             date = request.date,
             category = category,
             memo = request.memo,
+            together = request.together,
         )
     }
 
