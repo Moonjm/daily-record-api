@@ -1,7 +1,9 @@
-package base.entity
+package com.example.backend.auth.entity
 
 import com.example.backend.auth.security.RefreshToken
+import com.example.backend.common.entity.withId
 import com.example.backend.user.User
+import com.example.backend.user.entity.dummyUser
 import java.time.LocalDateTime
 
 fun dummyRefreshToken(

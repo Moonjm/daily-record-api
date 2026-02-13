@@ -1,9 +1,8 @@
 package com.example.backend.auth
 
-import base.dto.dummyLoginRequest
-import base.dto.dummyRegisterRequest
-import base.entity.dummyRefreshToken
-import base.entity.dummyUser
+import com.example.backend.auth.dto.dummyLoginRequest
+import com.example.backend.auth.dto.dummyRegisterRequest
+import com.example.backend.auth.entity.dummyRefreshToken
 import com.example.backend.auth.security.JwtProperties
 import com.example.backend.auth.security.JwtService
 import com.example.backend.auth.security.RefreshToken
@@ -12,6 +11,7 @@ import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
 import com.example.backend.common.utils.TokenHasher
 import com.example.backend.user.UserRepository
+import com.example.backend.user.entity.dummyUser
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe

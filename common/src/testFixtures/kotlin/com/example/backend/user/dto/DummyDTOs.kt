@@ -1,4 +1,4 @@
-package base.dto
+package com.example.backend.user.dto
 
 import com.example.backend.user.UserUpdateRequest
 import java.time.LocalDate

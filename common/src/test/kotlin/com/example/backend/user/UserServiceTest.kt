@@ -1,9 +1,9 @@
 package com.example.backend.user
 
-import base.dto.dummyUserUpdateRequest
-import base.entity.dummyUser
 import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
+import com.example.backend.user.dto.dummyUserUpdateRequest
+import com.example.backend.user.entity.dummyUser
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
