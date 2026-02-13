@@ -2,6 +2,7 @@ package com.example.backend.dailyrecords
 
 import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
+import com.example.backend.pair.PairService
 import com.example.backend.user.User
 import com.example.backend.user.UserRepository
 import org.springframework.stereotype.Service
@@ -13,6 +14,7 @@ import java.time.LocalDate
 class DailyOvereatService(
     private val repository: DailyOvereatRepository,
     private val userRepository: UserRepository,
+    private val pairService: PairService,
 ) {
     fun list(
         username: String,
@@ -20,7 +22,8 @@ class DailyOvereatService(
         to: LocalDate,
     ): List<DailyOvereatResponse> {
         val user = findUser(username)
-        return repository.findAllByUserAndDateBetween(user, from, to).map { it.toResponse() }
+        val effectiveUser = resolveOvereatUser(user)
+        return repository.findAllByUserAndDateBetween(effectiveUser, from, to).map { it.toResponse() }
     }
 
     @Transactional
@@ -29,7 +32,8 @@ class DailyOvereatService(
         request: DailyOvereatRequest,
     ) {
         val user = findUser(username)
-        val existing = repository.findByDateAndUser(request.date, user)
+        val effectiveUser = resolveOvereatUser(user)
+        val existing = repository.findByDateAndUser(request.date, effectiveUser)
         if (existing != null) {
             if (request.overeatLevel == OvereatLevel.NONE) {
                 repository.delete(existing)
@@ -40,11 +44,16 @@ class DailyOvereatService(
             repository.save(
                 DailyOvereat(
                     date = request.date,
-                    user = user,
+                    user = effectiveUser,
                     overeatLevel = request.overeatLevel,
                 ),
             )
         }
+    }
+
+    private fun resolveOvereatUser(user: User): User {
+        val pair = pairService.findConnectedPair(user)
+        return pair?.inviter ?: user
     }
 
     private fun findUser(username: String): User =

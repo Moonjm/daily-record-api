@@ -4,6 +4,9 @@ import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
 import com.example.backend.dailyrecords.dto.dummyDailyOvereatRequest
 import com.example.backend.dailyrecords.entity.dummyDailyOvereat
+import com.example.backend.pair.PairService
+import com.example.backend.pair.PairStatus
+import com.example.backend.pair.entity.dummyPairConnection
 import com.example.backend.user.UserRepository
 import com.example.backend.user.entity.dummyUser
 import io.kotest.assertions.throwables.shouldThrow
@@ -19,34 +22,65 @@ class DailyOvereatServiceTest :
     BehaviorSpec({
         val repository = mockk<DailyOvereatRepository>()
         val userRepository = mockk<UserRepository>()
-        val service = DailyOvereatService(repository, userRepository)
+        val pairService = mockk<PairService>()
+        val service = DailyOvereatService(repository, userRepository, pairService)
 
         val user = dummyUser()
         val date = LocalDate.of(2026, 2, 1)
 
-        Given("목록 조회 시") {
+        Given("페어 미연결 시 목록 조회") {
             When("정상 요청") {
                 val from = LocalDate.of(2026, 2, 1)
                 val to = LocalDate.of(2026, 2, 28)
                 val overeat = dummyDailyOvereat(user = user)
 
                 every { userRepository.findByUsername("testuser") } returns user
+                every { pairService.findConnectedPair(user) } returns null
                 every { repository.findAllByUserAndDateBetween(user, from, to) } returns listOf(overeat)
 
                 val result = service.list("testuser", from, to)
 
-                Then("DailyOvereatResponse 리스트 반환") {
+                Then("본인 기준 DailyOvereatResponse 리스트 반환") {
                     result.size shouldBe 1
                     result[0].overeatLevel shouldBe OvereatLevel.MILD
                 }
             }
         }
 
-        Given("upsert 시") {
+        Given("페어 연결 시 목록 조회") {
+            val inviter = dummyUser(username = "inviter", name = "초대자", id = 1L)
+            val partner = dummyUser(username = "partner", name = "파트너", id = 2L)
+            val pair =
+                dummyPairConnection(
+                    inviter = inviter,
+                    partner = partner,
+                    status = PairStatus.CONNECTED,
+                )
+
+            When("파트너가 조회하면 inviter 기준으로 반환") {
+                val from = LocalDate.of(2026, 2, 1)
+                val to = LocalDate.of(2026, 2, 28)
+                val overeat = dummyDailyOvereat(user = inviter)
+
+                every { userRepository.findByUsername("partner") } returns partner
+                every { pairService.findConnectedPair(partner) } returns pair
+                every { repository.findAllByUserAndDateBetween(inviter, from, to) } returns listOf(overeat)
+
+                val result = service.list("partner", from, to)
+
+                Then("inviter 기준 데이터 반환") {
+                    result.size shouldBe 1
+                    result[0].overeatLevel shouldBe OvereatLevel.MILD
+                }
+            }
+        }
+
+        Given("페어 미연결 시 upsert") {
             When("기존 기록 없음, MILD") {
                 val request = dummyDailyOvereatRequest()
 
                 every { userRepository.findByUsername("testuser") } returns user
+                every { pairService.findConnectedPair(user) } returns null
                 every { repository.findByDateAndUser(date, user) } returns null
                 every { repository.save(any()) } answers { firstArg() }
 
@@ -61,6 +95,7 @@ class DailyOvereatServiceTest :
                 val request = dummyDailyOvereatRequest(overeatLevel = OvereatLevel.NONE)
 
                 every { userRepository.findByUsername("testuser") } returns user
+                every { pairService.findConnectedPair(user) } returns null
                 every { repository.findByDateAndUser(date, user) } returns null
 
                 service.upsert("testuser", request)
@@ -76,6 +111,7 @@ class DailyOvereatServiceTest :
                 val request = dummyDailyOvereatRequest(overeatLevel = OvereatLevel.SEVERE)
 
                 every { userRepository.findByUsername("testuser") } returns user
+                every { pairService.findConnectedPair(user) } returns null
                 every { repository.findByDateAndUser(date, user) } returns existing
 
                 service.upsert("testuser", request)
@@ -90,6 +126,7 @@ class DailyOvereatServiceTest :
                 val request = dummyDailyOvereatRequest(overeatLevel = OvereatLevel.NONE)
 
                 every { userRepository.findByUsername("testuser") } returns user
+                every { pairService.findConnectedPair(user) } returns null
                 every { repository.findByDateAndUser(date, user) } returns existing
                 justRun { repository.delete(existing) }
 
@@ -97,6 +134,53 @@ class DailyOvereatServiceTest :
 
                 Then("기존 기록 삭제") {
                     verify { repository.delete(existing) }
+                }
+            }
+        }
+
+        Given("페어 연결 시 upsert") {
+            val inviter = dummyUser(username = "inviter", name = "초대자", id = 1L)
+            val partner = dummyUser(username = "partner", name = "파트너", id = 2L)
+            val pair =
+                dummyPairConnection(
+                    inviter = inviter,
+                    partner = partner,
+                    status = PairStatus.CONNECTED,
+                )
+
+            When("파트너가 upsert하면 inviter 기준으로 저장") {
+                val request = dummyDailyOvereatRequest()
+
+                every { userRepository.findByUsername("partner") } returns partner
+                every { pairService.findConnectedPair(partner) } returns pair
+                every { repository.findByDateAndUser(date, inviter) } returns null
+                every { repository.save(any()) } answers { firstArg() }
+
+                service.upsert("partner", request)
+
+                Then("inviter user로 저장") {
+                    verify {
+                        repository.save(
+                            match {
+                                it.user.username == "inviter" && it.overeatLevel == OvereatLevel.MILD
+                            },
+                        )
+                    }
+                }
+            }
+
+            When("inviter가 upsert하면 본인 기준으로 저장") {
+                val existing = dummyDailyOvereat(user = inviter, overeatLevel = OvereatLevel.MILD)
+                val request = dummyDailyOvereatRequest(overeatLevel = OvereatLevel.SEVERE)
+
+                every { userRepository.findByUsername("inviter") } returns inviter
+                every { pairService.findConnectedPair(inviter) } returns pair
+                every { repository.findByDateAndUser(date, inviter) } returns existing
+
+                service.upsert("inviter", request)
+
+                Then("레벨 업데이트") {
+                    existing.overeatLevel shouldBe OvereatLevel.SEVERE
                 }
             }
         }
