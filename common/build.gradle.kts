@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    `java-test-fixtures`
     kotlin("jvm")
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
@@ -24,5 +25,9 @@ dependencies {
     api("com.linecorp.kotlin-jdsl:spring-data-jpa-support:3.5.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    testFixturesImplementation("org.springframework:spring-test")
+    testFixturesImplementation("io.kotest:kotest-runner-junit5:6.0.0.M1")
+    testImplementation("io.kotest:kotest-runner-junit5:6.0.0.M1")
+    testImplementation("io.mockk:mockk:1.14.2")
     runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.2.9.Final:${if (System.getProperty("os.arch") == "aarch64") "osx-aarch_64" else "osx-x86_64"}")
 }
