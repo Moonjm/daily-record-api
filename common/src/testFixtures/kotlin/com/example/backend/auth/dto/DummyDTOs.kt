@@ -1,4 +1,4 @@
-package base.dto
+package com.example.backend.auth.dto
 
 import com.example.backend.auth.LoginRequest
 import com.example.backend.auth.RegisterRequest

@@ -1,12 +1,12 @@
 package com.example.backend.admin
 
-import base.dto.dummyAdminUserUpdateRequest
-import base.entity.dummyUser
+import com.example.backend.admin.dto.dummyAdminUserUpdateRequest
 import com.example.backend.auth.security.RefreshTokenRepository
 import com.example.backend.common.constant.ErrorCode
 import com.example.backend.common.exception.CustomException
 import com.example.backend.user.Authority
 import com.example.backend.user.UserRepository
+import com.example.backend.user.entity.dummyUser
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe

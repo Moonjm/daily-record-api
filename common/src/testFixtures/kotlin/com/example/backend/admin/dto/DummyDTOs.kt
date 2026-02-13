@@ -1,4 +1,4 @@
-package base.dto
+package com.example.backend.admin.dto
 
 import com.example.backend.admin.AdminUserUpdateRequest
 import com.example.backend.user.Authority

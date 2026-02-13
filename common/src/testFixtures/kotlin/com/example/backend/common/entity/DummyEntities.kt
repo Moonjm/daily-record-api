@@ -1,6 +1,5 @@
-package base.entity
+package com.example.backend.common.entity
 
-import com.example.backend.common.entity.BaseEntity
 import org.springframework.test.util.ReflectionTestUtils
 import java.time.LocalDateTime
 

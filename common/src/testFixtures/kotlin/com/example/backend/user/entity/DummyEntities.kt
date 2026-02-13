@@ -1,5 +1,6 @@
-package base.entity
+package com.example.backend.user.entity
 
+import com.example.backend.common.entity.withId
 import com.example.backend.user.Authority
 import com.example.backend.user.Gender
 import com.example.backend.user.User

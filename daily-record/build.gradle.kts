@@ -10,4 +10,6 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(testFixtures(project(":common")))
+    testImplementation("io.kotest:kotest-runner-junit5:6.0.0.M1")
+    testImplementation("io.mockk:mockk:1.14.2")
 }
