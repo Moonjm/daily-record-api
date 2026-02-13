@@ -18,6 +18,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation")
     api("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
     api("org.jetbrains.kotlin:kotlin-reflect")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin")
     api("io.github.oshai:kotlin-logging:7.0.12")
     api("io.jsonwebtoken:jjwt-api:0.12.6")
     api("com.linecorp.kotlin-jdsl:jpql-dsl:3.5.5")
