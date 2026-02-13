@@ -1,1 +1,2 @@
-rootProject.name = "daily-record-api"
+rootProject.name = "toy-back"
+include(":common", ":daily-record")

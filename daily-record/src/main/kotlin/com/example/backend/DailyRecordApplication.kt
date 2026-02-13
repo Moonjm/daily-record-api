@@ -6,8 +6,8 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-class BackendApplication
+class DailyRecordApplication
 
 fun main(args: Array<String>) {
-    runApplication<BackendApplication>(*args)
+    runApplication<DailyRecordApplication>(*args)
 }

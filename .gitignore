@@ -60,6 +60,9 @@ pnpm-debug.log*
 # Testing
 coverage/
 
+# Claude
+CLAUDE.md
+
 # Misc
 *.swp
 *.swo

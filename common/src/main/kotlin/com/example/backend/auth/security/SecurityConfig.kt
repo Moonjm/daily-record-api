@@ -1,4 +1,4 @@
-package com.example.backend.common.config
+package com.example.backend.auth.security
 
 import com.example.backend.auth.security.JwtAuthFilter
 import org.springframework.context.annotation.Bean

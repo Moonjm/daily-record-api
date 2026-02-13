@@ -1,58 +1,54 @@
 plugins {
     val kotlinVersion = "2.3.0"
-    id("org.springframework.boot") version "4.0.2"
-    id("io.spring.dependency-management") version "1.1.7"
-    kotlin("jvm") version kotlinVersion
-    kotlin("plugin.spring") version kotlinVersion
-    kotlin("plugin.jpa") version kotlinVersion
-    id("com.diffplug.spotless") version "8.2.1"
+    id("org.springframework.boot") version "4.0.2" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
+    kotlin("jvm") version kotlinVersion apply false
+    kotlin("plugin.spring") version kotlinVersion apply false
+    kotlin("plugin.jpa") version kotlinVersion apply false
+    id("com.diffplug.spotless") version "8.2.1" apply false
 }
 
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
+subprojects {
+    group = "com.example"
+    version = "0.0.1-SNAPSHOT"
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "com.diffplug.spotless")
+
+    repositories {
+        mavenCentral()
     }
-}
 
-kotlin {
-    jvmToolchain(25)
-}
+    configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
+        imports {
+            mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+        }
+    }
 
-repositories {
-    mavenCentral()
-}
+    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+        kotlin {
+            target("src/**/*.kt")
+            ktlint()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
 
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("io.github.oshai:kotlin-logging:7.0.12")
-    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:3.5.5")
-    implementation("com.linecorp.kotlin-jdsl:jpql-render:3.5.5")
-    implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:3.5.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.2.9.Final:${if (System.getProperty("os.arch") == "aarch64") "osx-aarch_64" else "osx-x86_64"}")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-spotless {
-    kotlin {
-        target("src/**/*.kt")
-        ktlint()
-        trimTrailingWhitespace()
-        endWithNewline()
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        extensions.configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(25)
+            }
+        }
+
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
+            }
+        }
     }
 }
