@@ -10,12 +10,12 @@ fi
 
 source "${SCRIPT_DIR}/.deploy.env"
 
-MODULES=("$@")
-
-if [ ${#MODULES[@]} -eq 0 ]; then
+if [ "$#" -eq 0 ]; then
   echo "배포할 모듈이 없습니다. 사용법: ./deploy.sh <모듈1> [모듈2] ..." >&2
   exit 1
 fi
+
+MODULES=("$@")
 
 for MODULE in "${MODULES[@]}"; do
   echo ""
