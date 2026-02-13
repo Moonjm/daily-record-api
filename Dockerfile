@@ -3,7 +3,9 @@ ARG MODULE
 WORKDIR /app
 COPY gradlew settings.gradle.kts build.gradle.kts ./
 COPY gradle ./gradle
-RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
+COPY common/build.gradle.kts ./common/
+COPY ${MODULE}/build.gradle.kts ./${MODULE}/
+RUN chmod +x gradlew && ./gradlew :${MODULE}:dependencies --no-daemon
 COPY common ./common
 COPY ${MODULE} ./${MODULE}
 RUN ./gradlew :${MODULE}:bootJar --no-daemon
