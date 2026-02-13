@@ -29,5 +29,4 @@ dependencies {
     testFixturesImplementation("io.kotest:kotest-runner-junit5:6.1.3")
     testImplementation("io.kotest:kotest-runner-junit5:6.1.3")
     testImplementation("io.mockk:mockk:1.14.2")
-    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.2.9.Final:${if (System.getProperty("os.arch") == "aarch64") "osx-aarch_64" else "osx-x86_64"}")
 }
