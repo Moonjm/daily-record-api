@@ -5,4 +5,5 @@ enum class OvereatLevel {
     MILD,
     MODERATE,
     SEVERE,
+    EXTREME,
 }
